@@ -1,0 +1,86 @@
+.dashboard {
+    font-family: 'Arial', sans-serif;
+    color: #333;
+  }
+  
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f5f5f5;
+    padding: 1rem;
+  }
+  
+  .navigation {
+    display: flex;
+  }
+  
+  .nav-item {
+    margin: 0 1rem;
+  }
+  
+  .site-name {
+    font-size: 1.5rem;
+  }
+  
+  .main-content {
+    padding: 1rem;
+  }
+  
+  .channel-info {
+    background-color: #e0e0e0;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+  }
+  
+  .channel-name {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+  
+  .subscriber-count {
+    color: #666;
+  }
+  
+  .buttons-section {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+  }
+  
+  .button {
+    background-color: #007bff;
+    color: white;
+    padding: 0.5rem 1rem;
+    margin-bottom: 0.5rem;
+    text-decoration: none;
+    text-align: center;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .images-section {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .image-container {
+    width: 100px; /* Adjust width as needed */
+    height: 100px; /* Adjust height as needed */
+    border-radius: 50%;
+    background-color: #c0c0c0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+  }
+  
+  .image-placeholder {
+    /* Placeholder for actual image styling */
+  }
+  
+  .image-container:last-child {
+    margin-right: 0;
+  }
+  
