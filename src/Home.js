@@ -1,11 +1,18 @@
 import React from 'react';
 import './Home.css';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 function Home() {
   return (
     <div className="analytics-dashboard">
       <header className="dashboard-header">
+        {/* Move the Trending and My Channel buttons here */}
+        <button className="trending-button">
+          <Link to="/trending">Trending</Link>
+        </button>
+        <button className="trending-button">
+          <Link to="/channel">My Channel</Link>
+        </button>
         <nav className="navigation">
           <div className="nav-item">←</div>
           <div className="nav-item">🔍 mytube.com</div>
@@ -34,16 +41,9 @@ function Home() {
           </div>
           <div className="content-box">
             <div className="box-header">Search bar for Personal Video</div>
+            <input type="text" placeholder="Search..." className="search-input" />
             <div className="search-output">Output of Search(Editable)</div>
             <button className="button delete-button">DELETE</button>
-          </div>
-          <div>
-          <button className="trending-button">
-              <Link to="/trending">Trending</Link>
-          </button>
-          <button className="trending-button">
-              <Link to="/channel">My Channel</Link>
-          </button>
           </div>
         </div>
       </section>
