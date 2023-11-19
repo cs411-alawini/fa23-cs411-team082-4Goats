@@ -1,11 +1,13 @@
 import React from 'react';
 import './Home.css';
 import { Link } from 'react-router-dom';
-
+import MyTube from './MyTube.jpg'
 function Home() {
   return (
     <div className="analytics-dashboard">
+      
       <header className="dashboard-header">
+        
         {/* Move the Trending and My Channel buttons here */}
         <button className="trending-button">
           <Link to="/trending">Trending</Link>
@@ -14,9 +16,12 @@ function Home() {
           <Link to="/channel">My Channel</Link>
         </button>
         <nav className="navigation">
-          <div className="nav-item">←</div>
-          <div className="nav-item">🔍 mytube.com</div>
-          <div className="nav-item">Username</div>
+          <div className="nav-item"><img
+          src={MyTube}
+          alt="MyTube"
+          className="top-right-image"
+        /></div>
+          <div className="nav-item">Username:</div>
         </nav>
         <div className="header-item">Analytics Dashboard</div>
       </header>
