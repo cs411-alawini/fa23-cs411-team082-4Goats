@@ -1,8 +1,9 @@
 from flask import Flask
+from flask_cors import CORS
 import mysql.connector
 
 api = Flask(__name__)
-
+CORS(api)
 def sqlquery(query):
 
     mydb = mysql.connector.connect(

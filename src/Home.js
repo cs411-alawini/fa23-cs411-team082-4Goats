@@ -1,8 +1,19 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import './Home.css';
 import { Link } from 'react-router-dom';
 import MyTube from './MyTube.jpg'
 function Home() {
+
+  // const [profile, setProfile] = useState({ name: '', about: '' });
+
+  // useEffect(() => {
+  //   fetch('http://localhost:5000/test')  // Replace with your Flask server URL
+  //     .then(response => response.json())
+  //     .then(data => setProfile(data))
+  //     .catch(error => console.error('Error:', error));
+  // }, []);
+
+
   return (
     <div className="analytics-dashboard">
       
@@ -39,6 +50,13 @@ function Home() {
             <div className="box-header">Highest Trending Videos for My Channel List</div>
           </div>
         </div>
+        {/* <div className="content-row"> this is where we can put api calls
+          <div className="content-box">
+            <div className="box-header">Profile Information</div>
+            <p>Name: {profile.name}</p>
+            <p>About: {profile.about}</p>
+          </div>
+        </div> */}
         <div className="content-row">
           <div className="content-box">
             <div className="box-header">Insert Personal Video Into Table Header</div>
