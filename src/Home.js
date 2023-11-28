@@ -17,12 +17,15 @@ function Home() {
   const [searchInput, setSearchInput] = useState(""); // Added state for the search input
 
   function handleSearchInputChange(event) {
+    console.log("Event change")
     console.log(event)
     setSearchInput(event.target.value);
   }
 
   function getData(typerq,endpoint) {
+    console.log("Search input: ")
     console.log(searchInput)
+    console.log("Endpoint: ")
     console.log(endpoint)
     axios({
       method: typerq,
@@ -96,7 +99,7 @@ function Home() {
           </div>
           <div className="content-box">
             <div className="box-header">Search bar for Personal Video</div>
-            <button onClick={getData("POST","searchBar")}>Click me</button>
+            <button onClick={() => getData("POST", "searchBar")}>Click me</button>
             <input 
               type="text" 
               placeholder="Search..." 
