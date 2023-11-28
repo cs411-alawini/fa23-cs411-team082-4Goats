@@ -1,4 +1,5 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
+import axios from "axios";
 import './Home.css';
 import { Link } from 'react-router-dom';
 import MyTube from './MyTube.jpg'
@@ -12,6 +13,37 @@ function Home() {
   //     .then(data => setProfile(data))
   //     .catch(error => console.error('Error:', error));
   // }, []);
+  const [setProfileData] = useState(null)
+  const [searchInput, setSearchInput] = useState(""); // Added state for the search input
+
+  function handleSearchInputChange(event) {
+    console.log(event)
+    setSearchInput(event.target.value);
+  }
+
+  function getData(typerq,endpoint) {
+    console.log(searchInput)
+    console.log(endpoint)
+    axios({
+      method: typerq,
+      url:`http://127.0.0.1:5000/${endpoint}`,
+      params: {
+        input : searchInput
+      }
+    })
+    .then((response) => {
+      const res =response.data
+      console.log(res)
+      setProfileData(({
+        profile_name: res.name,
+        about_me: res.about}))
+    }).catch((error) => {
+      if (error.response) {
+        console.log(error.response)
+        console.log(error.response.status)
+        console.log(error.response.headers)
+        }
+    })}
 
 
   return (
@@ -64,7 +96,14 @@ function Home() {
           </div>
           <div className="content-box">
             <div className="box-header">Search bar for Personal Video</div>
-            <input type="text" placeholder="Search..." className="search-input" />
+            <button onClick={getData("POST","searchBar")}>Click me</button>
+            <input 
+              type="text" 
+              placeholder="Search..." 
+              className="search-input"
+              value={searchInput}
+              onChange={handleSearchInputChange}
+            />
             <div className="search-output">Output of Search(Editable)</div>
             <button className="button delete-button">DELETE</button>
           </div>
@@ -73,5 +112,4 @@ function Home() {
     </div>
   );
 }
-
 export default Home;

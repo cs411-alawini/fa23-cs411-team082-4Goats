@@ -1,9 +1,12 @@
 from flask import Flask
 from flask_cors import CORS
+from flask import Flask, jsonify, redirect, render_template, request
 import mysql.connector
+import requests
 
 api = Flask(__name__)
 CORS(api)
+
 def sqlquery(query):
 
     mydb = mysql.connector.connect(
@@ -20,11 +23,21 @@ def sqlquery(query):
     return myresult
 
 
-@api.route('/test')
+@api.route('/test', methods=['GET'])
 def my_profile():
     response_body = {
         "name": "hello",
         "about" :"Hello! I'm a full stack developer that loves python and javascript and CS411"
     }
+    print("hello we made it!")
 
     return response_body
+
+@api.route('/searchBar', methods=['POST'])
+def search_bar():
+    # Accessing the 'input' parameter from the request
+    search_input = request.args.get('input')
+
+    # Your logic here
+
+    return "Received: " + search_input
