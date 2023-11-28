@@ -37,7 +37,9 @@ def my_profile():
 def search_bar():
     # Accessing the 'input' parameter from the request
     search_input = request.args.get('input')
-
+    query = "SELECT title FROM Videos WHERE channel_id LIKE 'UCvtRTOMP2TqYqu51xNrqAzg'"
+    data = sqlquery(query)
+    print(data)
     # Your logic here
 
-    return "Received: " + search_input
+    return str(data)
