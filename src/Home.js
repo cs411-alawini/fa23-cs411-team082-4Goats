@@ -4,17 +4,9 @@ import './Home.css';
 import { Link } from 'react-router-dom';
 import MyTube from './MyTube.jpg'
 function Home() {
-
-  // const [profile, setProfile] = useState({ name: '', about: '' });
-
-  // useEffect(() => {
-  //   fetch('http://localhost:5000/test')  // Replace with your Flask server URL
-  //     .then(response => response.json())
-  //     .then(data => setProfile(data))
-  //     .catch(error => console.error('Error:', error));
-  // }, []);
   const [setProfileData] = useState(null)
   const [searchInput, setSearchInput] = useState(""); // Added state for the search input
+  const [searchResults, setSearchResults] = useState([]); // State to store search results
 
   function handleSearchInputChange(event) {
     console.log("Event change")
@@ -37,6 +29,7 @@ function Home() {
     .then((response) => {
       const res =response.data
       console.log(res)
+      setSearchResults(response.data)
       setProfileData(({
         profile_name: res.name,
         about_me: res.about}))
@@ -85,13 +78,6 @@ function Home() {
             <div className="box-header">Highest Trending Videos for My Channel List</div>
           </div>
         </div>
-        {/* <div className="content-row"> this is where we can put api calls
-          <div className="content-box">
-            <div className="box-header">Profile Information</div>
-            <p>Name: {profile.name}</p>
-            <p>About: {profile.about}</p>
-          </div>
-        </div> */}
         <div className="content-row">
           <div className="content-box">
             <div className="box-header">Insert Personal Video Into Table Header</div>
@@ -110,6 +96,18 @@ function Home() {
             <div className="search-output">Output of Search(Editable)</div>
             <button className="button delete-button">DELETE</button>
           </div>
+          <div className="content-row">
+        <div className="content-box">
+          {searchResults.length > 0 && searchResults.map((video, index) => (
+            <div key={index}>
+              <p>Title: {video.title}</p>
+              <p>Likes: {video.likes}</p>
+              <p>View Count: {video.view_count}</p>
+              <p>Published Date: {video.date_published}</p>
+            </div>
+          ))}
+          </div>
+        </div>
         </div>
       </section>
     </div>

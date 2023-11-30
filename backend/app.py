@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 api = Flask(__name__)
 CORS(api)
 
-def sqlquery(query):
+def sqlquery(query, params=None):
 
     mydb = mysql.connector.connect(
         host="104.198.145.57",
@@ -19,7 +19,7 @@ def sqlquery(query):
     )
 
     mycursor = mydb.cursor()
-    mycursor.execute(query)
+    mycursor.execute(query, params)
     myresult = mycursor.fetchall()
 
     return myresult
@@ -72,11 +72,14 @@ def getTrendingViews():
 
 @api.route('/searchBar', methods=['POST'])
 def search_bar():
-    # Accessing the 'input' parameter from the request
     search_input = request.args.get('input')
-    query = "SELECT title FROM Videos WHERE channel_id LIKE 'UCvtRTOMP2TqYqu51xNrqAzg'"
-    data = sqlquery(query)
+    if not search_input:
+        return jsonify([])
+    print(search_input)
+    query = "SELECT title, likes, view_count, published_at FROM Videos WHERE title = %s"
+    # AND channel_id LIKE 'UCvtRTOMP2TqYqu51xNrqAzg' (add later)
+    data = sqlquery(query, (search_input,))
     print(data)
-    # Your logic here
-
-    return str(data)
+    
+    response = [{"title": row[0], "likes":row[1], "view_count":row[2], "date_published": pd.to_datetime(row[3])} for row in data]
+    return jsonify(response)
