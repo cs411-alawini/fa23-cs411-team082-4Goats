@@ -41,14 +41,18 @@ def getHighestTrendingVideos():
     data = sqlquery(query)
     df = pd.DataFrame(data)
 
-    df['publishedAt'] = pd.to_datetime(df['publishedAt'])
-
-    df_sorted = df.sort_values(by=['channelId', 'likes', 'publishedAt'], ascending=[True, False, False])
+    df_sorted = df.sort_values(by=[1,5,6])
 
     channel_id = 'UCvtRTOMP2TqYqu51xNrqAzg'
-    trending_videos = df_sorted[df_sorted['channelId'] == channel_id]
+    trending_videos = df_sorted[df_sorted.iloc[:, 1] == channel_id]
 
     print(trending_videos)
+    response = [{
+        "title": row[1],
+        "likes": row[5],
+        "date_published": pd.to_datetime(row[6])
+    } for row in trending_videos.itertuples()]
+    return jsonify(response)
 
 @api.route('/getTrendingViews', methods=['POST'])
 def getTrendingViews():
