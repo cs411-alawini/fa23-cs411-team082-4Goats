@@ -30,6 +30,7 @@ function Home() {
       const res =response.data
       console.log(res)
       setSearchResults(response.data)
+      console.log(searchResults)
       setProfileData(({
         profile_name: res.name,
         about_me: res.about}))
@@ -76,6 +77,17 @@ function Home() {
           </div>
           <div className="content-box">
             <div className="box-header">Highest Trending Videos for My Channel List</div>
+            <button onClick={() => getData("POST", "getHighestTrendingVideos")}>Click me</button>
+            <div className="content-box">
+              {searchResults.length > 0 && searchResults.map((video, index) => (
+                <div key={index}>
+                  
+                  <p>Title: {video.title}</p> {/* Updated to display the title */}
+                  <p>Likes: {video.view_count}</p> {/* Assuming 'likes' is a property in the JSON */}
+                  <p>Published Date: {video.date_published}</p> {/* Assuming 'publishedAt' is a property in the JSON */}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
         <div className="content-row">
