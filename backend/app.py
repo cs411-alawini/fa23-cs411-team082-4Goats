@@ -74,13 +74,42 @@ def getTrendingViews():
     plt.tight_layout() 
     plt.show()
 
+@api.route('/updateTags', methods=['POST'])
+def update_tags():
+    data = request.json
+    video_id = data['video_id']
+    updated_tags = data['tags']
+    print(updated_tags)
+    query = "UPDATE Tags SET tags = '{}' WHERE video_id LIKE '{}'".format(updated_tags, video_id)
+    print(query)
+    data = sqlquery(query, None)
+    print(data)
+    return jsonify({"success": True, "message": "Tags updated successfully"})
+
+
+@api.route('/getVideosByChannelName', methods=['POST'])
+def get_videos():
+    channel_name = 'UCvtRTOMP2TqYqu51xNrqAzg'
+    query = "SELECT video_id, title FROM Videos WHERE channel_id LIKE %s"
+    data = sqlquery(query, (channel_name, ))
+    video_ids = [row[0] for row in data]
+    format_strings = ','.join(['%s'] * len(video_ids))
+    print(format_strings)
+    tag_query = f"SELECT video_id, tags FROM Tags WHERE video_id IN ({format_strings})"
+    tags_data = sqlquery(tag_query, tuple(video_ids))
+    first_row = tags_data[0]
+    print(first_row)
+    tags_response = {'video_id': first_row[0], 'tags': first_row[1].split('|') if first_row[1] else []}
+
+    return jsonify(tags_response)
+
 @api.route('/searchBar', methods=['POST'])
 def search_bar():
     search_input = request.args.get('input')
     if not search_input:
         return jsonify([])
     print(search_input)
-    query = "SELECT title, likes, view_count, published_at FROM Videos WHERE title = %s"
+    query = "SELECT title, likes, view_count, published_at FROM Videos WHERE title LIKE %s"
     # AND channel_id LIKE 'UCvtRTOMP2TqYqu51xNrqAzg' (add later)
     data = sqlquery(query, (search_input,))
     print(data)
