@@ -80,7 +80,7 @@ def update_tags():
     video_id = data['video_id']
     updated_tags = data['tags']
     print(updated_tags)
-    query = "UPDATE Tags SET tags = '{}' WHERE video_id LIKE '{}'".format(updated_tags, video_id)
+    query = "UPDATE Tags SET tags = '{}' WHERE video_id = '{}'".format(updated_tags, video_id)
     print(query)
     data = sqlquery(query, None)
     print(data)
@@ -94,7 +94,6 @@ def get_videos():
     data = sqlquery(query, (channel_name, ))
     video_ids = [row[0] for row in data]
     format_strings = ','.join(['%s'] * len(video_ids))
-    print(format_strings)
     tag_query = f"SELECT video_id, tags FROM Tags WHERE video_id IN ({format_strings})"
     tags_data = sqlquery(tag_query, tuple(video_ids))
     first_row = tags_data[0]
