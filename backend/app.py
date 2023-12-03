@@ -39,6 +39,7 @@ def my_profile():
 
 @api.route('/getHighestTrendingVideos', methods=['POST'])
 def getHighestTrendingVideos():
+    global trending_videos
     query = "SELECT * FROM Videos WHERE channel_id LIKE '{}'".format(currentChannelId)
     data = sqlquery(query)
     df = pd.DataFrame(data)
@@ -176,7 +177,13 @@ def register():
 
 @api.route('/topTrending', methods=['GET'])
 def trending():
+    global trending_videos
     query = "SELECT categoryName, COUNT(categoryName) AS frequency FROM CatNewNew GROUP BY categoryName ORDER BY frequency DESC LIMIT 3;"
     data = sqlquery(query)
     print(data)
-    return data
+    videoids = ""
+    for x in trending_videos.itertuples():
+        videoids = videoids + x[1] + ','
+    second = "SELECT categoryName, COUNT(categoryName) AS frequency FROM CatNewNew WHERE video_id IN ('{}') GROUP BY categoryName ORDER BY frequency DESC LIMIT 1".format(videoids)    
+    data2 = sqlquery(second)
+    return jsonify(data, data2)

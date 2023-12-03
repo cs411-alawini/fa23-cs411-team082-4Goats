@@ -34,7 +34,7 @@ function Trending() {
           {/* Placeholder for trending header content */}
         </div>
         <div className="content-box">
-          <div className="box-header">Trending Videos List</div>
+          <div className="box-header">Trending Categories List</div>
           {/* Placeholder for list of trending videos */}
           <ul>
             {/* Mock data: Replace with actual data */}
