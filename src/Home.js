@@ -61,7 +61,7 @@ function Home() {
           alt="MyTube"
           className="top-right-image"
         /></div>
-          <div className="nav-item">Username:</div>
+          <div className="nav-item">Username: {localStorage.getItem('channelName')}</div>
         </nav>
         <div className="header-item">Analytics Dashboard</div>
       </header>

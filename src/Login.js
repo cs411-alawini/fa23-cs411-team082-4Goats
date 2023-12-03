@@ -48,7 +48,13 @@ function Login() {
         .then((response) => {
             if (response.data === "Already Exists"){
                 alert("Account Already Exists, Please Try a Different Channel ID!")
-            } else {
+            } else if (response.data === "Not a Valid Channel") {
+                alert("Not a Valid Channel")
+            }
+                else {
+                localStorage.setItem("channelName", (response.data)[1])
+                localStorage.setItem("channelId", (response.data)[0])
+                console.log(response.data)
                 alert("Registration Successful. Please Login.")
             }
             console.log('Registration successful:', response.data);
