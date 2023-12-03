@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 api = Flask(__name__)
 CORS(api)
 
+
 def sqlquery(query, params=None):
 
     mydb = mysql.connector.connect(
@@ -38,13 +39,13 @@ def my_profile():
 
 @api.route('/getHighestTrendingVideos', methods=['POST'])
 def getHighestTrendingVideos():
-    query = "SELECT * FROM Videos WHERE channel_id LIKE 'UCvtRTOMP2TqYqu51xNrqAzg'"
+    query = "SELECT * FROM Videos WHERE channel_id LIKE '{}'".format(currentChannelId)
     data = sqlquery(query)
     df = pd.DataFrame(data)
 
     df_sorted = df.sort_values(by=[1,5,6])
 
-    channel_id = 'UCvtRTOMP2TqYqu51xNrqAzg'
+    channel_id = currentChannelId
     trending_videos = df_sorted[df_sorted.iloc[:, 1] == channel_id]
 
     print(trending_videos)
@@ -57,10 +58,10 @@ def getHighestTrendingVideos():
 
 @api.route('/getTrendingViews', methods=['POST'])
 def getTrendingViews():
-    query = "SELECT * FROM Videos WHERE channel_id LIKE 'UCvtRTOMP2TqYqu51xNrqAzg'"   
+    query = "SELECT * FROM Videos WHERE channel_id LIKE '{}'".format(currentChannelId)   
     data = sqlquery(query)
     df = pd.DataFrame(data)
-    channel_id = 'UCvtRTOMP2TqYqu51xNrqAzg'
+    channel_id = currentChannelId
     channel_data = df[df['channelId'] == channel_id]
 
     channel_data_sorted = channel_data.sort_values(by='publishedAt')
@@ -90,7 +91,7 @@ def update_tags():
 
 @api.route('/getVideosByChannelName', methods=['POST'])
 def get_videos():
-    channel_name = 'UCvtRTOMP2TqYqu51xNrqAzg'
+    channel_name = currentChannelId
     query = "SELECT video_id, title FROM Videos WHERE channel_id LIKE %s"
     data = sqlquery(query, (channel_name, ))
     video_ids = [row[0] for row in data]
@@ -143,10 +144,23 @@ def login():
 
 @api.route('/register', methods=['POST'])
 def register():
+    global currentChannel, currentChannelId
     data = request.json
     user = data.get('Channel')
     passwd = data.get('password')
 
+    getChannel = "SELECT channelId, channelTitle FROM Channels"
+    channels = sqlquery(getChannel)
+    channel_titles = []
+    channel_id_title = {}
+    for row in channels:
+        channel_title = row[1] 
+        channel_id_title[row[1]] = row[0]
+        channel_titles.append(channel_title)
+    if user+"\r" not in channel_titles:
+        return "Not a Valid Channel"
+    curr_channel_id = channel_id_title[user+"\r"]
+    print(curr_channel_id)
     check_query = "SELECT * FROM Login WHERE user = '{}';".format(user)
     resultcheck = sqlquery(check_query)
     if len(resultcheck) != 0:
@@ -154,4 +168,8 @@ def register():
     update_query = "INSERT INTO Login (user, password) VALUES ('{}','{}')".format(user, passwd)
     result = sqlquery(update_query)
     print (result)
-    return "Worked"
+    currentChannel = user
+    currentChannelId = curr_channel_id
+    print(currentChannelId)
+    print(currentChannel)
+    return jsonify([curr_channel_id, user])
