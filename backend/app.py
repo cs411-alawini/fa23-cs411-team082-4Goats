@@ -21,6 +21,7 @@ def sqlquery(query, params=None):
     mycursor = mydb.cursor()
     mycursor.execute(query, params)
     myresult = mycursor.fetchall()
+    mydb.commit()
 
     return myresult
 
