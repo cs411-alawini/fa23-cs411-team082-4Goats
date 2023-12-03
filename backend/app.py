@@ -94,6 +94,7 @@ def get_videos():
     data = sqlquery(query, (channel_name, ))
     video_ids = [row[0] for row in data]
     format_strings = ','.join(['%s'] * len(video_ids))
+    print(format_strings)
     tag_query = f"SELECT video_id, tags FROM Tags WHERE video_id IN ({format_strings})"
     tags_data = sqlquery(tag_query, tuple(video_ids))
     first_row = tags_data[0]
@@ -115,26 +116,3 @@ def search_bar():
     
     response = [{"title": row[0], "likes":row[1], "view_count":row[2], "date_published": pd.to_datetime(row[3])} for row in data]
     return jsonify(response)
-
-@api.route('/login', methods=['POST'])
-def login():
-    data = request.json
-    user = data.get('Channel')
-    passwd = data.get('password')
-    #print(user)
-    #print(passwd)
-    '''check_query = "SELECT EXISTS FROM information_schema.tables WHERE table_schema = 'US_youtube' AND table_name = 'Login';"
-    try:
-        exists = sqlquery(check_query)
-        print(exists)
-    except Exception :
-        sqlquery("CREATE TABLE Login (user VARCHAR(255), password VARCHAR(20));")
-    '''
-    query = "SELECT * FROM Login WHERE user = '{}';".format(user)
-    check = sqlquery(query, None)
-    print (check)
-    if len(check) == 0:
-        return "no"
-    if check[0][1] == passwd:
-        return "yes"
-    return "no"
