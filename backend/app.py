@@ -140,3 +140,18 @@ def login():
     if check[0][1] == passwd:
         return "yes"
     return "no"
+
+@api.route('/register', methods=['POST'])
+def register():
+    data = request.json
+    user = data.get('Channel')
+    passwd = data.get('password')
+
+    check_query = "SELECT * FROM Login WHERE user = '{}';".format(user)
+    resultcheck = sqlquery(check_query)
+    if len(resultcheck) != 0:
+        return "Already Exists"
+    update_query = "INSERT INTO Login (user, password) VALUES ('{}','{}')".format(user, passwd)
+    result = sqlquery(update_query)
+    print (result)
+    return "Worked"

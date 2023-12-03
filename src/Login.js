@@ -46,8 +46,13 @@ function Login() {
             }
         })
         .then((response) => {
+            if (response.data === "Already Exists"){
+                alert("Account Already Exists, Please Try a Different Channel ID!")
+            } else {
+                alert("Registration Successful. Please Login.")
+            }
             console.log('Registration successful:', response.data);
-            alert("Registration successful. Please login.");
+            //alert("Registration successful. Please login.");
         })
         .catch((error) => {
             if (error.response) {
