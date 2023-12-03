@@ -21,7 +21,9 @@ function Login() {
         .then((response) => {
             console.log('Login successful:', response.data);
             // Redirect to /home on successful login
-            if (response.data === "yes"){
+            if ((response.data)[0] === "yes"){
+                localStorage.setItem("channelName", (response.data)[1])
+                localStorage.setItem("channelId", (response.data)[2])
                 navigate('/home');
             } else {
                 alert("Wrong Password. Please try again.")
