@@ -1,7 +1,22 @@
-import React from 'react';
-import './Trending.css'; // Make sure this path is correct for your project structure
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import './Trending.css'; 
 
 function Trending() {
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    axios.get('http://127.0.0.1:5000/topTrending')
+      .then((response) => {
+        // Assuming the response.data is an array of categories
+        setCategories(response.data);
+        console.log(response.data)
+      })
+      .catch((error) => {
+        console.error('Error fetching categories:', error);
+      });
+  }, []);
+
   return (
     <div className="trending-page">
       <header className="dashboard-header">
@@ -23,9 +38,9 @@ function Trending() {
           {/* Placeholder for list of trending videos */}
           <ul>
             {/* Mock data: Replace with actual data */}
-            <li>Video 1</li>
-            <li>Video 2</li>
-            <li>Video 3</li>
+            <li>{categories[0]}</li>
+            <li>{categories[1]}</li>
+            <li>{categories[2]}</li>
           </ul>
         </div>
         <div className="content-box">

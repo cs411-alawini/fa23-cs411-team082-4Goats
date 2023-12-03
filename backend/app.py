@@ -173,3 +173,10 @@ def register():
     print(currentChannelId)
     print(currentChannel)
     return jsonify([curr_channel_id, user])
+
+@api.route('/topTrending', methods=['GET'])
+def trending():
+    query = "SELECT categoryName, COUNT(categoryName) AS frequency FROM CatNewNew GROUP BY categoryName ORDER BY frequency DESC LIMIT 3;"
+    data = sqlquery(query)
+    print(data)
+    return data
