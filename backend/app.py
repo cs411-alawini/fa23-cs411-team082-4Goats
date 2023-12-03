@@ -122,11 +122,25 @@ def search_bar():
 
 @api.route('/login', methods=['POST'])
 def login():
+    global currentChannel, currentChannelId
     data = request.json
     user = data.get('Channel')
     passwd = data.get('password')
     #print(user)
     #print(passwd)
+    getChannel = "SELECT channelId, channelTitle FROM Channels"
+    channels = sqlquery(getChannel)
+    channel_titles = []
+    channel_id_title = {}
+    for row in channels:
+        channel_title = row[1] 
+        channel_id_title[row[1]] = row[0]
+        channel_titles.append(channel_title)
+    if user+"\r" not in channel_titles:
+        return "Not a Valid Channel"
+    curr_channel_id = channel_id_title[user+"\r"]
+    currentChannel = user
+    currentChannelId = curr_channel_id
     '''check_query = "SELECT EXISTS FROM information_schema.tables WHERE table_schema = 'US_youtube' AND table_name = 'Login';"
     try:
         exists = sqlquery(check_query)
@@ -140,7 +154,7 @@ def login():
     if len(check) == 0:
         return "no"
     if check[0][1] == passwd:
-        return "yes"
+        return jsonify("yes",currentChannel, currentChannelId)
     return "no"
 
 @api.route('/register', methods=['POST'])
