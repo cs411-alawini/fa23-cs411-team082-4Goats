@@ -111,14 +111,15 @@ def search_bar():
     search_input = request.args.get('input')
     if not search_input:
         return jsonify([])
-    print(search_input)
     query = "SELECT title, likes, view_count, published_at FROM Videos WHERE title LIKE %s"
-    # AND channel_id LIKE 'UCvtRTOMP2TqYqu51xNrqAzg' (add later)
-    data = sqlquery(query, (search_input,))
-    print(data)
-    
-    response = [{"title": row[0], "likes":row[1], "view_count":row[2], "date_published": pd.to_datetime(row[3])} for row in data]
+
+    search_pattern = "%" + search_input + "%"
+
+    data = sqlquery(query, (search_pattern,))
+
+    response = [{"title": row[0], "likes": row[1], "view_count": row[2], "date_published": pd.to_datetime(row[3]).strftime('%Y-%m-%d')} for row in data]
     return jsonify(response)
+
 
 @api.route('/login', methods=['POST'])
 def login():
