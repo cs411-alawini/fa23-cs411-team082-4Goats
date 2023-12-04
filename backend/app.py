@@ -201,3 +201,10 @@ def trending():
     second = "SELECT categoryName, COUNT(categoryName) AS frequency FROM CatNewNew WHERE video_id IN ('{}') GROUP BY categoryName ORDER BY frequency DESC LIMIT 1".format(videoids)    
     data2 = sqlquery(second)
     return jsonify(data, data2)
+
+@api.route('/oldVid', methods=['GET'])
+def delete():
+    global currentChannelId
+    query = "SELECT * FROM Videos WHERE channel_id = '{}' ORDER BY published_at ASC LIMIT 3".format(currentChannelId)
+    data = sqlquery(query)
+    return data
