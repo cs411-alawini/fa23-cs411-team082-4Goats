@@ -208,4 +208,22 @@ def delete():
     global currentChannelId
     query = "SELECT * FROM Videos WHERE channel_id = '{}' ORDER BY published_at ASC LIMIT 3".format(currentChannelId)
     data = sqlquery(query)
-    return data
+    response = [{"video_id": row[0], "title": row[3], "likes": row[5], "view_count": row[4], "date_published": row[6]} for row in data]
+    
+    return jsonify(response)
+
+@api.route('/deleteVideo', methods=['POST'])
+def delete_video():
+    data = request.json
+    video_id = data.get('video_id')
+
+    if not video_id:
+        return jsonify({"error": "No video ID provided"}), 400
+    
+    delete_child_query = "DELETE FROM CatNewNew WHERE video_id = %s"
+    sqlquery(delete_child_query, (video_id,))
+
+    delete_query = "DELETE FROM Videos WHERE video_id = '{}'".format(video_id)
+    data = sqlquery(delete_query) 
+
+    return jsonify({"message": "Video deleted successfully"}), 200

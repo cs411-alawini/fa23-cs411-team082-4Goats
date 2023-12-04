@@ -8,6 +8,7 @@ function Channel() {
   const [searchInput] = useState(""); // Added state for the search input
   const [searchResults, setSearchResults] = useState([]); // State to store search results
   const [tags, setTags] = useState([]);
+  const [oldVideoInfo, setOldVideoInfo] = useState([]); 
 
   useEffect(() => {
     // Assuming searchResults.tags is the array of tags
@@ -16,6 +17,8 @@ function Channel() {
     }
   }, [searchResults]);
 
+  useEffect(() => {
+    fetchOldVideoInfo(); }, []); 
 
   const deleteTag = (tagToDelete) => {
     const updatedTags = tags.filter(tag => tag !== tagToDelete);
@@ -36,7 +39,28 @@ function Channel() {
       console.error('Error updating tags:', error);
     });
   };
+
+  const fetchOldVideoInfo = () => {
+    axios.get('http://127.0.0.1:5000/oldVid')
+      .then((response) => {
+        setOldVideoInfo(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching old video info:', error);
+      });
+  };
+
   
+  const deleteVideo = (videoId) => {
+    axios.post('http://127.0.0.1:5000/deleteVideo', { video_id: videoId })
+      .then(response => {
+        console.log('Video deleted successfully:', response);
+        setOldVideoInfo(oldVideoInfo.filter(video => video.video_id !== videoId));
+      })
+      .catch(error => {
+        console.error('Error deleting video:', error);
+      });
+  };
 
 
   function getData(typerq,endpoint) {
@@ -82,10 +106,6 @@ function Channel() {
           <div className="channel-name">CHANNEL NAME</div>
           <div className="subscriber-count">Subscriber Count</div>
         </div>
-        <div className="buttons-section">
-          <Link to="/trending-ideas" className="button">Trending Ideas Button</Link>
-          <Link to="/analytics" className="button">Analytics Dashboard Button</Link>
-        </div>
         
         <div className="content-box">
           <div className="box-header">Get Videos and Their Tags</div>
@@ -105,6 +125,17 @@ function Channel() {
               </div>
             )}
           </div>
+        </div>
+        
+
+        <div className="content-box">
+        {oldVideoInfo.map((video, index) => (
+          <div key={index}>
+            <p>Video ID: {video.title}</p>
+            <p>Published Date: {video.date_published}</p>
+            <button onClick={() => deleteVideo(video.video_id)}>Delete</button>
+          </div>
+        ))}
         </div>
 
 
