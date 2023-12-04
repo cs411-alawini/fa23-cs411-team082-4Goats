@@ -18,6 +18,10 @@ function Channel() {
   }, [searchResults]);
 
   useEffect(() => {
+    getData("POST", "getVideosByChannelName");
+  }, []); 
+
+  useEffect(() => {
     fetchOldVideoInfo(); }, []); 
 
   const deleteTag = (tagToDelete) => {
@@ -97,23 +101,20 @@ function Channel() {
           {/* Placeholder for back button and site logo */}
           <div className="nav-item">←</div>
           <div className="nav-item">🔍 mytube.com</div>
-          <div className="nav-item">Username</div>
+          <div className="nav-item">Username: {localStorage.getItem('channelName')}</div>
         </nav>
         <div className="site-name">MyTube</div>
       </header>
       <main className="main-content">
         <div className="channel-info">
-          <div className="channel-name">CHANNEL NAME</div>
-          <div className="subscriber-count">Subscriber Count</div>
+          <div className="channel-name">CHANNEL NAME: {localStorage.getItem('channelName')}</div>
         </div>
         
         <div className="content-box">
-          <div className="box-header">Get Videos and Their Tags</div>
-          <button onClick={() => getData("POST", "getVideosByChannelName")}>Click me</button>
+          <div className="box-header"></div>
           <div className="content-box">
             {searchResults && (
               <div>
-                <p>Video ID: {searchResults.video_id}</p>
                 <p>Tags:</p>
                 <ul>
                   {tags.map((tag, index) => (

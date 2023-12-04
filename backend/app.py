@@ -49,11 +49,11 @@ def getHighestTrendingVideos():
     channel_id = currentChannelId
     trending_videos = df_sorted[df_sorted.iloc[:, 1] == channel_id]
 
-    print(trending_videos)
     response = [{
-        "title": row[1],
-        "likes": row[5],
-        "date_published": pd.to_datetime(row[6])
+        "title": row[4],
+        "view_count": row[5],
+        "likes": row[6],
+        "date_published": row[7]
     } for row in trending_videos.itertuples()]
     return jsonify(response)
 

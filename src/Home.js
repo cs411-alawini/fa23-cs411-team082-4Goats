@@ -1,54 +1,132 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import axios from "axios";
 import './Home.css';
 import { Link } from 'react-router-dom';
 import MyTube from './MyTube.jpg'
-function Home() {
-  const [setProfileData] = useState(null)
-  const [searchInput, setSearchInput] = useState(""); // Added state for the search input
-  const [searchResults, setSearchResults] = useState([]); // State to store search results
+import { Line } from 'react-chartjs-2';
+import { Chart, registerables } from 'chart.js';
 
+Chart.register(...registerables);
+function Home() {
+  const [searchInput, setSearchInput] = useState(""); 
+  const [searchResults, setSearchResults] = useState([]); 
+  const [trendingVideos, setTrendingVideos] = useState([]); 
+  const [sortOrder, setSortOrder] = useState("ascending");
+
+  const [likesAndViewData, setLikesAndViewData] = useState({
+    labels: [],
+    datasets: []
+  });
+  
   function handleSearchInputChange(event) {
     console.log("Event change")
     console.log(event)
     setSearchInput(event.target.value);
   }
 
-  function getData(typerq,endpoint) {
-    console.log("Search input: ")
-    console.log(searchInput)
-    console.log("Endpoint: ")
-    console.log(endpoint)
+  useEffect(() => {
+    getData("POST", "getHighestTrendingVideos");
+  }, []); 
+  
+
+  function getData(typerq, endpoint) {
     axios({
       method: typerq,
       url:`http://127.0.0.1:5000/${endpoint}`,
       params: {
-        input : searchInput
+        input: searchInput
       }
     })
     .then((response) => {
-      const res =response.data
-      console.log(res)
-      setSearchResults(response.data)
-      console.log(searchResults)
-      setProfileData(({
-        profile_name: res.name,
-        about_me: res.about}))
+      if (endpoint === "searchBar") {
+        setSearchResults(response.data);
+      } else if (endpoint === "getHighestTrendingVideos") {
+        setTrendingVideos(response.data);
+      }
     }).catch((error) => {
-      if (error.response) {
-        console.log(error.response)
-        console.log(error.response.status)
-        console.log(error.response.headers)
-        }
-    })}
+    });
+  }
 
+
+  const [chartData, setChartData] = useState({
+    labels: [],
+    datasets: [
+      {
+        label: 'View Count',
+        data: [],
+        backgroundColor: 'rgb(75, 192, 192)',
+        borderColor: 'rgba(75, 192, 192, 0.2)',
+      },
+    ],
+  });
+  const [chartDataLikes, setChartDataLikes] = useState({
+    labels: [],
+    datasets: [
+      {
+        label: 'Date vs Likes',
+        data: [],
+        backgroundColor: 'rgb(75, 192, 192)',
+        borderColor: 'rgba(75, 192, 192, 0.2)',
+      },
+    ],
+  });
+  
+  useEffect(() => {
+    const combinedData = trendingVideos.map(video => ({
+      date: video.date_published,
+      likes: video.likes,
+      view: video.view_count,
+    }));
+  
+    combinedData.sort((a, b) => {
+      if (sortOrder === "ascending") {
+        return new Date(a.date) - new Date(b.date);
+      } else {
+        return new Date(b.date) - new Date(a.date);
+      }
+    });
+  
+    setChartData({
+      labels: combinedData.map(data => data.date),
+      datasets: [{
+        ...chartData.datasets[0],
+        data: combinedData.map(data => data.view)
+      }]
+    });
+  
+    setChartDataLikes({
+      labels: combinedData.map(data => data.date),
+      datasets: [{
+        ...chartDataLikes.datasets[0],
+        data: combinedData.map(data => data.likes)
+      }]
+    });
+  
+    setLikesAndViewData({
+      labels: combinedData.map(data => data.date),
+      datasets: [
+        {
+          label: 'Likes',
+          data: combinedData.map(data => data.likes),
+          borderColor: 'rgb(255, 99, 132)',
+          backgroundColor: 'rgba(255, 99, 132, 0.5)',
+        },
+        {
+          label: 'View Count',
+          data: combinedData.map(data => data.view),
+          borderColor: 'rgb(54, 162, 235)',
+          backgroundColor: 'rgba(54, 162, 235, 0.5)',
+        }
+      ]
+    });
+  }, [trendingVideos, sortOrder]);
+  
 
   return (
     <div className="analytics-dashboard">
       
       <header className="dashboard-header">
         
-        {/* Move the Trending and My Channel buttons here */}
         <button className="trending-button">
           <Link to="/trending">Trending</Link>
         </button>
@@ -67,37 +145,10 @@ function Home() {
       </header>
       <section className="content">
         <div className="content-row">
-          <div className="content-box">
-            <div className="box-header">MyTube Dashboard Header</div>
-          </div>
-        </div>
-        <div className="content-row">
-          <div className="content-box">
-            <div className="box-header">Trending Graph showing views over time</div>
-          </div>
-          <div className="content-box">
-            <div className="box-header">Highest Trending Videos for My Channel List</div>
-            <button onClick={() => getData("POST", "getHighestTrendingVideos")}>Click me</button>
-            <div className="content-box">
-              {searchResults.length > 0 && searchResults.map((video, index) => (
-                <div key={index}>
-                  
-                  <p>Title: {video.title}</p> {/* Updated to display the title */}
-                  <p>Likes: {video.view_count}</p> {/* Assuming 'likes' is a property in the JSON */}
-                  <p>Published Date: {video.date_published}</p> {/* Assuming 'publishedAt' is a property in the JSON */}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-        <div className="content-row">
-          <div className="content-box">
-            <div className="box-header">Insert Personal Video Into Table Header</div>
-            <button className="button">Import CSV Button</button>
-          </div>
+          
           <div className="content-box">
             <div className="box-header">Search bar for Personal Video</div>
-            <button onClick={() => getData("POST", "searchBar")}>Click me</button>
+            <button onClick={() => getData("POST", "searchBar")}>Search</button>
             <input 
               type="text" 
               placeholder="Search..." 
@@ -105,11 +156,11 @@ function Home() {
               value={searchInput}
               onChange={handleSearchInputChange}
             />
-            <div className="search-output">Output of Search(Editable)</div>
-            <button className="button delete-button">DELETE</button>
+            
           </div>
           <div className="content-row">
         <div className="content-box">
+          <div className="scrollable-list">
           {searchResults.length > 0 && searchResults.map((video, index) => (
             <div key={index}>
               <p>Title: {video.title}</p>
@@ -119,7 +170,51 @@ function Home() {
             </div>
           ))}
           </div>
+          </div>
         </div>
+        </div>
+        <div className="content-row">
+          
+        <div className="content-box">
+          <div className="box-header">Highest Trending Videos for My Channel List</div>
+          <div className="scrollable-list">
+            {trendingVideos.length > 0 && trendingVideos.map((video, index) => (
+              <div key={index}>
+                <p>Title: {video.title}</p>
+                <p>Likes: {video.likes}</p>
+                <p>Published Date: {video.date_published}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+          <div className="content-box">
+            
+            <div className="box-header">Trending Videos View Count Over Time</div>
+            <div>
+              <button onClick={() => setSortOrder("ascending")}>Sort Ascending</button>
+              <button onClick={() => setSortOrder("descending")}>Sort Descending</button>
+            </div>
+            <Line data={chartData} />
+            
+
+          </div>
+          <div className="content-box">
+
+            <div className="box-header">Trending Videos Likes Over Time</div>
+            <div>
+              <button onClick={() => setSortOrder("ascending")}>Sort Ascending</button>
+              <button onClick={() => setSortOrder("descending")}>Sort Descending</button>
+            </div>
+            <Line data={chartDataLikes} />
+          </div>
+          <div className="content-box">
+            <div className="box-header">Likes and View Count Over Videos</div>
+            <div>
+              <button onClick={() => setSortOrder("ascending")}>Sort Ascending</button>
+              <button onClick={() => setSortOrder("descending")}>Sort Descending</button>
+            </div>
+            <Line data={likesAndViewData} />
+          </div>
         </div>
       </section>
     </div>
