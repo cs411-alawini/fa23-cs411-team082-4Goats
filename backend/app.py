@@ -164,7 +164,15 @@ def register():
     data = request.json
     user = data.get('Channel')
     passwd = data.get('password')
-
+    #NEED CONN FOR CALLING PROC 
+    mydb = mysql.connector.connect(
+        host="104.198.145.57",
+        user="root",
+        password="team82",
+        database="US_youtube"
+    )
+    mycursor = mydb.cursor()
+    mycursor.callproc("UpdateChannelRatingsAdvanced")
     getChannel = "SELECT channelId, channelTitle FROM Channels"
     channels = sqlquery(getChannel)
     channel_titles = []
