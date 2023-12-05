@@ -11,6 +11,7 @@ function Home() {
   const [searchInput, setSearchInput] = useState(""); 
   const [searchResults, setSearchResults] = useState([]); 
   const [trendingVideos, setTrendingVideos] = useState([]); 
+  const [channelRating, setChannelRating] = useState([]);
   const [sortOrder, setSortOrder] = useState("ascending");
 
   const [likesAndViewData, setLikesAndViewData] = useState({
@@ -72,6 +73,17 @@ function Home() {
   });
   
   useEffect(() => {
+
+    axios({
+      method: "GET",
+      url:`http://127.0.0.1:5000/getChannelRating`
+    })
+    .then((response) => {
+      setChannelRating(response.data)
+    }).catch((error) => {
+    });
+
+
     const combinedData = trendingVideos.map(video => ({
       date: video.date_published,
       likes: video.likes,
@@ -141,7 +153,9 @@ function Home() {
         /></div>
           <div className="nav-item">Username: {localStorage.getItem('channelName')}</div>
         </nav>
-        <div className="header-item">MyTube Analytics Dashboard</div>
+        <div className="header-item">Your Channel Rating: {channelRating.map((ratings) => (
+          <div className="header-item">{ratings.rating}</div>
+        ))}</div>
       </header>
       <section className="content">
         <div className="channel-info">
