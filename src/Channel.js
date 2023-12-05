@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import axios from "axios";
 import { Link } from 'react-router-dom';
 import './Channel.css'; 
+
 function Channel() {
 
   const [setProfileData] = useState(null)
@@ -99,7 +100,9 @@ function Channel() {
       <header className="dashboard-header">
         <nav className="navigation">
           {/* Placeholder for back button and site logo */}
-          <div className="nav-item">←</div>
+          <div className="nav-item">
+            <Link to="/home" className="nav-link">←</Link>
+          </div>
           <div className="nav-item">🔍 mytube.com</div>
           <div className="nav-item">Username: {localStorage.getItem('channelName')}</div>
         </nav>

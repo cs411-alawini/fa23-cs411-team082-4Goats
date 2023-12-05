@@ -141,9 +141,12 @@ function Home() {
         /></div>
           <div className="nav-item">Username: {localStorage.getItem('channelName')}</div>
         </nav>
-        <div className="header-item">Analytics Dashboard</div>
+        <div className="header-item">MyTube Analytics Dashboard</div>
       </header>
       <section className="content">
+        <div className="channel-info">
+          <div className="channel-name">Hi {localStorage.getItem('channelName')}! Welcome to MyTube! </div>
+        </div>
         <div className="content-row">
           
           <div className="content-box">
