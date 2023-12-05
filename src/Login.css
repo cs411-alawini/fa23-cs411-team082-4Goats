@@ -1,0 +1,23 @@
+h2{
+    font-family: 'Forum', serif;
+    font-family: 'Inter', sans-serif;
+    font-weight: bolder;
+}
+
+
+
+input{
+    background-color: azure;
+}
+
+.inner{
+    text-align: center;
+    font-size: x-large;
+}
+
+button{
+  margin-left: 10px;
+  background-color : rgb(227, 199, 173);
+  border: none;
+  font-weight: bold;
+}

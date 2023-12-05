@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import './Login.css'
 
 function Login() {
     const [Channel, setChannel] = useState('');
@@ -72,7 +73,8 @@ function Login() {
     };
 
     return (
-        <div>
+        <div className='inner'>
+            <style>@import url('https://fonts.googleapis.com/css2?family=Forum&family=Inter:wght@900&display=swap');</style>
             <h2>Login</h2>
             <form onSubmit={(e) => {
                 e.preventDefault();
