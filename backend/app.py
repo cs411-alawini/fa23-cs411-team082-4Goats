@@ -6,6 +6,7 @@ import requests
 import pandas as pd
 import matplotlib.pyplot as plt
 
+
 api = Flask(__name__)
 CORS(api)
 
@@ -203,15 +204,24 @@ def trending():
     global trending_videos
     query = "SELECT categoryName, COUNT(categoryName) AS frequency FROM CatNewNew GROUP BY categoryName ORDER BY frequency DESC LIMIT 3;"
     data = sqlquery(query)
-    print(data)
-    videoids = ""
-    for x in trending_videos.itertuples():
-        videoids = videoids + x[1] + ','
-    second = "SELECT categoryName, COUNT(categoryName) AS frequency FROM CatNewNew WHERE video_id IN ('{}') GROUP BY categoryName ORDER BY frequency DESC LIMIT 1".format(videoids)    
-    data2 = sqlquery(second)
-    print(data)
-    print(data2)
-    return jsonify(data, data2)
+    trending_categories = [{'categoryName': row[0], 'frequency': row[1]} for row in data]
+    print(trending_categories)
+    return jsonify(trending_categories)
+
+@api.route('/getTopChannels', methods=['GET'])
+def getTopChannels():
+    query = """
+    SELECT channel_id, SUM(view_count) AS total_views
+    FROM Videos
+    GROUP BY channel_id
+    ORDER BY total_views DESC
+    LIMIT 5;
+    """
+    data = sqlquery(query)
+    response = [{"channelId": row[0], "total_views": row[1]} for row in data]
+    print(response)
+    return jsonify(response)
+
 
 @api.route('/oldVid', methods=['GET'])
 def delete():

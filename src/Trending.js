@@ -1,28 +1,68 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './Trending.css'; 
+import { Bar } from 'react-chartjs-2';
+import Chart from 'chart.js/auto';
+import { Link } from 'react-router-dom';
+
 
 function Trending() {
   const [categories, setCategories] = useState([]);
+  const [topChannels, setChannels] = useState([]);
+  const [chartData, setChartData] = useState({
+    labels: [],
+    datasets: []
+});
 
   useEffect(() => {
     axios.get('http://127.0.0.1:5000/topTrending')
-      .then((response) => {
-        // Assuming the response.data is an array of categories
-        setCategories(response.data);
-        console.log(response.data)
+      .then(response => {
+        setCategories(response.data);;
       })
-      .catch((error) => {
-        console.error('Error fetching categories:', error);
+      .catch(error => {
+        console.error('Error deleting video:', error);
       });
-  }, []);
+
+      axios.get('http://127.0.0.1:5000/getTopChannels')
+      .then(response => {
+        setChannels(response.data);;
+      })
+      .catch(error => {
+        console.error('Error deleting video:', error);
+      });
+
+
+      fetch('http://localhost:5000/getHighestTrendingVideos', { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                const videoTitles = data.map(item => item.title);
+                const viewCounts = data.map(item => item.view_count);
+
+                setChartData({
+                    labels: videoTitles,
+                    datasets: [
+                        {
+                            label: 'View Count',
+                            data: viewCounts,
+                            backgroundColor: 'rgba(75, 192, 192, 0.5)'
+                        }
+                    ]
+                });
+            })
+            .catch(error => console.error('Error:', error));
+  }, []); 
+  
+
+  
 
   return (
     <div className="trending-page">
       <header className="dashboard-header">
         <nav className="navigation">
           {/* Placeholder for back button and site logo */}
-          <div className="nav-item">←</div>
+          <div className="nav-item">
+            <Link to="/home" className="nav-link">←</Link>
+          </div>
           <div className="nav-item">🔍 mytube.com</div>
           <div className="nav-item">Username</div>
         </nav>
@@ -30,39 +70,26 @@ function Trending() {
       </header>
       <section className="content">
         <div className="content-box">
-          <div className="box-header">TRENDING HEADER</div>
-          {/* Placeholder for trending header content */}
+          <div>
+              <h2>Trending Videos View Count</h2>
+              <Bar data={chartData} />
+          </div>
         </div>
         <div className="content-box">
           <div className="box-header">Trending Categories List</div>
           {/* Placeholder for list of trending videos */}
-          <ul>
-            {/* Mock data: Replace with actual data */}
-            <li>Trending Category 1:<bold>{categories[0][0][0]}</bold> with total videos #{categories[0][0][1]}</li>
-            <li>Trending Category 2:<bold>{categories[0][1][0]}</bold> with total videos #{categories[0][1][1]}</li>
-            <li>Trending Category 3:<bold>{categories[0][2][0]}</bold> with total videos #{categories[0][2][1]}</li>
-          </ul>
+          {categories.map((category, index) => (
+                    <li key={index}>Top Category {index+1}: {category.categoryName} - Frequency: {category.frequency}</li>
+                ))}
         </div>
         <div className="content-box">
           <div className="box-header">Trending Channels List</div>
           {/* Placeholder for list of trending channels */}
-          <ul>
-            {/* Mock data: Replace with actual data */}
-            <li>Channel 1</li>
-            <li>Channel 2</li>
-            <li>Channel 3</li>
-          </ul>
+          {topChannels.map((channel, index) => (
+                    <li key={index}>Top Channel {index+1}: {channel.channelId} - Frequency: {channel.total_views}</li>
+                ))}
         </div>
-        <div className="content-box">
-          <div className="box-header">Trending Tags List</div>
-          {/* Placeholder for list of trending tags */}
-          <ul>
-            {/* Mock data: Replace with actual data */}
-            <li>Tag 1</li>
-            <li>Tag 2</li>
-            <li>Tag 3</li>
-          </ul>
-        </div>
+        
       </section>
     </div>
   );

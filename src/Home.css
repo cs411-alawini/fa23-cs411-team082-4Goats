@@ -2,7 +2,12 @@
     font-family: 'Arial', sans-serif;
     color: #333;
   }
-  
+  .channel-info {
+    background-color: #e0e0e0;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+  }
   .dashboard-header {
     display: flex;
     justify-content: space-between;
