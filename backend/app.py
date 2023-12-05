@@ -247,3 +247,11 @@ def delete_video():
     data = sqlquery(delete_query) 
 
     return jsonify({"message": "Video deleted successfully"}), 200
+
+@api.route("/getChannelRating", methods=['GET'])
+def getChannelRating():
+    query = "SELECT * FROM Channels WHERE channelId = '{}'".format(currentChannelId)
+    data = sqlquery(query)
+    response = [{"channel_title": row[2], "rating": row[4]} for row in data]
+    print(response)
+    return jsonify(response)
