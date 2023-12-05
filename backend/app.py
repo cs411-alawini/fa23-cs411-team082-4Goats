@@ -201,6 +201,8 @@ def trending():
         videoids = videoids + x[1] + ','
     second = "SELECT categoryName, COUNT(categoryName) AS frequency FROM CatNewNew WHERE video_id IN ('{}') GROUP BY categoryName ORDER BY frequency DESC LIMIT 1".format(videoids)    
     data2 = sqlquery(second)
+    print(data)
+    print(data2)
     return jsonify(data, data2)
 
 @api.route('/oldVid', methods=['GET'])

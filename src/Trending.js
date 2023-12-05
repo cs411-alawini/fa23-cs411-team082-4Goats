@@ -38,9 +38,9 @@ function Trending() {
           {/* Placeholder for list of trending videos */}
           <ul>
             {/* Mock data: Replace with actual data */}
-            <li>{categories[0]}</li>
-            <li>{categories[1]}</li>
-            <li>{categories[2]}</li>
+            <li>Trending Category 1:<bold>{categories[0][0][0]}</bold> with total videos #{categories[0][0][1]}</li>
+            <li>Trending Category 2:<bold>{categories[0][1][0]}</bold> with total videos #{categories[0][1][1]}</li>
+            <li>Trending Category 3:<bold>{categories[0][2][0]}</bold> with total videos #{categories[0][2][1]}</li>
           </ul>
         </div>
         <div className="content-box">
