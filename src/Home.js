@@ -164,7 +164,7 @@ function Home() {
         <div className="content-row">
           
           <div className="content-box">
-            <div className="box-header">Search bar for Personal Video</div>
+            <div className="box-header">Search bar for YouTube Videos</div>
             <button onClick={() => getData("POST", "searchBar")}>Search</button>
             <input 
               type="text" 
@@ -195,7 +195,7 @@ function Home() {
         <div className="content-box">
           <div className="box-header">Highest Trending Videos for My Channel List</div>
           <div className="scrollable-list">
-            {trendingVideos.length > 0 && trendingVideos.map((video, index) => (
+            {trendingVideos.length > 0 && [...trendingVideos].reverse().map((video, index) => (
               <div key={index}>
                 <p>Title: {video.title}</p>
                 <p>Likes: {video.likes}</p>

@@ -13,6 +13,7 @@ function Trending() {
     labels: [],
     datasets: []
 });
+  const [popVideos, setPopVideos] = useState([]);
 
   useEffect(() => {
     axios.get('http://127.0.0.1:5000/topTrending')
@@ -29,6 +30,13 @@ function Trending() {
       })
       .catch(error => {
         console.error('Error deleting video:', error);
+      });
+
+      axios.get('http://127.0.0.1:5000/getTopVideos')
+      .then(response => {
+        setPopVideos(response.data);;
+      })
+      .catch(error => {
       });
 
 
@@ -79,14 +87,14 @@ function Trending() {
           <div className="box-header">Trending Categories List</div>
           {/* Placeholder for list of trending videos */}
           {categories.map((category, index) => (
-                    <li key={index}>Top Category {index+1}: {category.categoryName} - Frequency: {category.frequency}</li>
+                    <li key={index}>Top Category {index+1}: {category.categoryName} -- Number of Videos: {category.frequency}</li>
                 ))}
         </div>
         <div className="content-box">
-          <div className="box-header">Trending Channels List</div>
+          <div className="box-header">Trending Videos List</div>
           {/* Placeholder for list of trending channels */}
-          {topChannels.map((channel, index) => (
-                    <li key={index}>Top Channel {index+1}: {channel.channelId} - Frequency: {channel.total_views}</li>
+          {popVideos.map((channel, index) => (
+                    <li key={index}>Top Video {index+1}: {channel.title} -- Views: {channel.view_count}</li>
                 ))}
         </div>
         

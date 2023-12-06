@@ -222,6 +222,16 @@ def getTopChannels():
     print(response)
     return jsonify(response)
 
+@api.route('/getTopVideos', methods=['GET'])
+def getTopVideos():
+    query = '''SELECT title, view_count
+FROM Videos
+ORDER BY view_count DESC
+LIMIT 5;'''
+    data = sqlquery(query)
+    response = [{"title":row[0], "view_count":row[1]} for row in data]
+    return jsonify(response)
+
 
 @api.route('/oldVid', methods=['GET'])
 def delete():
